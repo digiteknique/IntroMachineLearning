@@ -38,7 +38,7 @@ kbest_feature_list = ['poi', 'salary', 'total_payments', 'bonus', 'total_stock_v
 tree_feature_list = ['poi','salary', 'total_payments', 'bonus', 'deferred_income',
                      'expenses' ]
 
-features_list = intuition_feature_list
+features_list = tree_feature_list
 
 
 ### Load the dictionary containing the dataset
@@ -117,26 +117,26 @@ def tune_rf_classifier(features_train, labels_train):
     }
     return tune_classifier(RandomForestClassifier(), param_grid, features_train, labels_train)
 
-clf = tune_rf_classifier(features_train, labels_train)
-# clf = tune_ada_classifier(features_train, labels_train)
+# clf = tune_rf_classifier(features_train, labels_train)
+clf = tune_ada_classifier(features_train, labels_train)
 
 # Optimized RF with intuition features Acc: 0.78850 Prec: 0.30758 Rec: 0.21500
-#clf = RandomForestClassifier(min_samples_split=2, n_estimators=5)
+# clf = RandomForestClassifier(min_samples_split=2, n_estimators=5)
 
 # Optimized RF with kbest features Acc: 0.86773 Prec: 0.50866 Rec: 0.23500
-#clf = RandomForestClassifier(min_samples_split=2, n_estimators=10)
+# clf = RandomForestClassifier(min_samples_split=2, n_estimators=10)
 
 # Optimized RF with tree features Acc: 0.83585 Prec: 0.40822 Rec: 0.14900
-#clf = RandomForestClassifier(min_samples_split=10, n_estimators=10)
+# clf = RandomForestClassifier(min_samples_split=10, n_estimators=10)
 
-# Optimized adaboost with intuition features Acc: 0. Prec: 0. Rec: 0.
-# clf = AdaBoostClassifier(n_estimators=, algorithm='')
+# Optimized adaboost with intuition features Acc: 0.84617 Prec: 0.54578 Rec: 0.45900
+# clf = AdaBoostClassifier(n_estimators=5, algorithm='SAMME')
 
-# Optimized adaboost with kbest features Acc: 0.84000 Prec: 0. Rec: 0. 
-# clf = AdaBoostClassifier(n_estimators=, algorithm='')
+# Optimized adaboost with kbest features Acc: 0.86760 Prec: 0.50928 Rec: 0.19200 
+# clf = AdaBoostClassifier(n_estimators=5, algorithm='SAMME.R')
 
-# Optimized adaboost with tree features Acc: 0. Prec: 0. Rec: 0. 
-# clf = AdaBoostClassifier(n_estimators=, algorithm='')
+# Optimized adaboost with tree features Acc: 0.83008 Prec: 0.42029 Rec: 0.27550 
+# clf = AdaBoostClassifier(n_estimators=500, algorithm='SAMME')
 
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
