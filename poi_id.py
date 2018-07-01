@@ -33,8 +33,9 @@ all_features_list = ['poi',  'salary', 'to_messages', 'deferral_payments',
 intuition_feature_list = ['poi', 'salary', 'bonus', 
                           'expenses', 'deferral_payments' ]
 
-kbest_feature_list = ['poi', 'salary', 'total_payments', 'bonus', 'total_stock_value', 
-                      'exercised_stock_options']
+kbest_feature_list = [ 'poi', 'salary', 'total_payments', 'loan_advances', 'bonus', 'deferred_income', 
+                      'total_stock_value', 'exercised_stock_options', 'other', 'long_term_incentive',
+                      'restricted_stock' ]
 
 tree_feature_list = ['poi','salary', 'total_payments', 'bonus', 'deferred_income',
                      'expenses' ]
@@ -67,7 +68,11 @@ data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 features = np.array(features)
 labels = np.array(labels)
- 
+
+
+
+# select_kbest(features, labels)
+
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
 ### Note that if you want to do PCA or other multi-stage operations,
@@ -91,6 +96,7 @@ from sklearn.cross_validation import train_test_split
 features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
 
+
 # Small method to tune parameters using GridSearchCV
 def tune_classifier(clf, param_grid, features_train, labels_train):
     # Use GridSearchCV tune, this takes a while
@@ -99,6 +105,7 @@ def tune_classifier(clf, param_grid, features_train, labels_train):
 
     print cv_rfc.best_params_
     return cv_rfc.best_estimator_
+
 
 def tune_kmeans_classifier(features_train, labels_train):
     param_grid = {

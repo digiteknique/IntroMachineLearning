@@ -9,8 +9,4 @@ aS'expenses'
 p4
 aS'deferral_payments'
 p5
-aS'email_ratio'
-p6
-aS'stock_ratio'
-p7
 a.

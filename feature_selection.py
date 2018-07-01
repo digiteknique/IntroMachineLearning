@@ -5,7 +5,11 @@ sys.path.append("./tools/")
 import matplotlib.pyplot as plt
 import numpy as np
 
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.feature_selection import RFECV
 from sklearn.svm import SVC
 
@@ -17,10 +21,42 @@ from sklearn.feature_selection import SelectFromModel
 from sklearn.ensemble import ExtraTreesClassifier
 
 # Method to run select k best features 
-def select_kbest(features_train, labels_train):
-    best = SelectKBest(f_classif, 6).fit(features_train, labels_train)
-    print best.scores_
-    print best.get_support()
+def select_kbest(features, labels):
+    #Stratified split
+    split = StratifiedKFold().split(features, labels)
+    best_score = 0.0
+    best_params = None
+    best_features = None
+    feature_scores = None
+    for k, (train, test) in enumerate(split):
+        features_train, features_test, labels_train, labels_test = features[train], features[test], labels[train], labels[test]
+
+        param_grid = {
+            'kbest__k': [4, 6, 8, 10, 12, 14],
+        }
+        kbest = SelectKBest(f_classif)
+        clf = AdaBoostClassifier(algorithm='SAMME', n_estimators=5)
+        pipeline = Pipeline([
+                              ('kbest', kbest), 
+                              ('clf', clf)
+                            ])
+
+        cv_kmeans = GridSearchCV(pipeline, param_grid=param_grid, scoring='f1')
+        cv_kmeans.fit(features_train, labels_train)
+
+        param = cv_kmeans.best_params_
+        score =  cv_kmeans.best_score_
+
+        if score > best_score:
+            best_score = score
+            best_params = param
+            best_features = cv_kmeans.best_estimator_.named_steps['kbest'].get_support()
+            feature_scores = cv_kmeans.best_estimator_.named_steps['kbest'].scores_
+    print best_score
+    print best_params
+    print best_features
+    print feature_scores
+
 
 # Method to run tree selection
 def tree_selection(features_train, labels_train): 

@@ -11784,7 +11784,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Question-1---Summary-of-project-goal">Question 1 - Summary of project goal<a class="anchor-link" href="#Question-1---Summary-of-project-goal">&#182;</a></h2><p><strong>Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question.</strong></p>
-<p>In this project I attempt to use machine learning to identify POIs (Persons of Interest) in the Enron fraud case. The data we have available on this case includes financial data (Salaries and bonuses) as well as email data (How many messages sent and to whom) on 145 people related to the case. There ended up being only 18 persons of interest in the data. Since there were a few possibly related data points in the data, it makes sense to attempt to classify the data using machine learning. This classifier will allow us to process a new person's data to determine if they fit the model of a POI.</p>
+<p>In this project I attempt to use machine learning to identify POIs (Persons of Interest) in the Enron fraud case. The data we have available on this case includes financial data (Salaries and bonuses) as well as email data (How many messages sent and to whom) on 146 people related to the case. There ended up being only 18 persons of interest in the data. Since there were a few possibly related data points in the data, it makes sense to attempt to classify the data using machine learning. This classifier will allow us to process a new person's data to determine if they fit the model of a POI.</p>
 <p><strong>Were there any outliers in the data when you got it, and how did you handle those?</strong></p>
 <p>There were a couple of outliers in the data. The first was the TOTAL line from the spreadsheet. Since this is just a tally of the values, I was able to eliminate it. I also eliminated Eugene Lockhart from the list because he had no data (Either 0 or NaN) in all of the features. Finally, I eliminated The Travel Agency in the Park. I am looking for persons of interest, and the fact they received about 320k in total payments with no additional data points did not help me deduce which were POIs.</p>
 <p>There were other data points that could be considered outliers, but I kept them in for a complete view of the data. Those were Kenneth Lay and Jeffrey Skilling. I primarily kept them in because they were POIs and very high up in the organization.</p>
@@ -11800,7 +11800,7 @@ div#notebook {
 Most of the time spent on this project was spent selecting features. I knew that I wanted to eliminate email address at the outset, as this only served as an additional identifier for the person. Then I decided to run some plots on data points that I thought, through intuition, would yeild interesting results. This was done in a jupyter notebook. This also allowed me to determine some outliers.</p>
 <p>I plotted several combinations of features into scatter plots to see any trends by eye. There were some, but I think we can use some tools to help. By eye, I would have opted to use poi, salary, bonus, expenses, and deferral payments stock options. I might have also included some ratio of messages sent to POI vs total messages sent.</p>
 <p>I created a feature_selection.py file to hold some methods for determining how those tools responded to the input.</p>
-<p>First, I ran a select k best feature selection attempting to get 6 features. This yeilded salary, total payments, bonus, total stock value,  exercised stock options, and shared receipt with poi</p>
+<p>First, I ran a select k best feature selection attempting to get the best features. I ran a stratified kfold with 3 folds on the data and ran a GridSearchCV on the k value for the kbest function on each fold. When I scored on F1, the 10 best features were listed as salary, total payments, loan advances, bonus, deferred income, total stock value, exercised stock options, other, long term incentive, and restricted stock.</p>
 <p>Next, I ran a tree classifier using ExtraTreesClassifier and SelectFromModel from sklearn. This yeilded salary, total payments, bonus, deferred income, total stock value, expenses, exercised stock options, other, long term incentive, shared receipt with poi, and restricted stock. This is 11 total features when I only really wanted 6 so I looked at the importances from the classifier and the best 6 were salary, bonus, deferred income, expenses, exercised stock options, and restricted stock.</p>
 <p>In the end, I went with my intuition on this. The model reported the best accuracy, recall, and precision using that.</p>
 <p><strong>Did you have to do any scaling? Why or why not?</strong></p>
@@ -11840,27 +11840,27 @@ Recall:      0.457              0.382</code></pre>
 <p>I grabbed the 6 features with the highest importances. It seems that many more and I would be at risk of overfitting.</p>
 <p>For the SelectKBest the feature scores were:</p>
 <ul>
-<li>'salary' 1.58587309e+01</li>
-<li>'to_messages' 2.61618300e+00 </li>
-<li>'deferral_payments' 9.98239959e-03  </li>
-<li>'total_payments' 8.95913665e+00</li>
-<li>'loan_advances' 7.03793280e+00 </li>
-<li>'bonus' 3.07287746e+01</li>
-<li>'restricted_stock_deferred' 7.27124110e-01 </li>
-<li>'deferred_income' 8.79220385e+00</li>
-<li>'total_stock_value' 1.06338520e+01 </li>
-<li>'expenses' 4.18072148e+00</li>
-<li>'from_poi_to_this_person' 4.95866668e+00</li>
-<li>'exercised_stock_options' 9.68004143e+00</li>
-<li>'from_messages' 4.35374099e-01 </li>
-<li>'other' 3.20445914e+00</li>
-<li>'from_this_person_to_poi' 1.11208239e-01 </li>
-<li>'long_term_incentive' 7.55511978e+00    </li>
-<li>'shared_receipt_with_poi' 1.07225708e+01</li>
-<li>'restricted_stock' 8.05830631e+00</li>
-<li>'director_fees' 1.64109793e+00</li>
+<li>'salary' 1.69083346e+01 </li>
+<li>'to_messages' 9.44681608e-03</li>
+<li>'deferral_payments' 8.70346251e-01</li>
+<li>'total_payments' 8.26649367e+00</li>
+<li>'loan_advances' 7.37593556e+00</li>
+<li>'bonus' 9.13929604e+00</li>
+<li>'restricted_stock_deferred' 6.90765835e-01</li>
+<li>'deferred_income' 2.05959606e+01</li>
+<li>'total_stock_value' 3.26918341e+01</li>
+<li>'expenses' 5.22611249e+00</li>
+<li>'from_poi_to_this_person' 4.45692704e-02</li>
+<li>'exercised_stock_options' 3.69075890e+01</li>
+<li>'from_messages' 6.96130358e-01</li>
+<li>'other' 8.28335202e+00</li>
+<li>'from_this_person_to_poi' 2.80544858e-01</li>
+<li>'long_term_incentive' 9.71089539e+00</li>
+<li>'shared_receipt_with_poi' 6.35554710e-01</li>
+<li>'restricted_stock' 9.01815682e+00</li>
+<li>'director_fees' 1.50287002e+00</li>
 </ul>
-<p>Similarly, I grabbed the 6 best features from the SelectKBest method. I feel like this is a good point between the variance and mean.</p>
+<p>Similarly, I grabbed the 10 best features from the SelectKBest method. I feel like this is a good point between the variance and mean.</p>
 
 </div>
 </div>
@@ -11882,14 +11882,14 @@ KMeans:
   Recall:      .26000                .22857            .04545
 
 Random Forest: 
-  Accuracy:    .78850                .86773            .83585
-  Precision:   .30758                .50866            .40822
-  Recall:      .21500                .23500            .14900
+  Accuracy:    .78850                .85493            .83585
+  Precision:   .30758                .42926            .40822
+  Recall:      .21500                .26700            .14900
 
 AdaBoost:  
-  Accuracy:    .86431                .86760            .83008
-  Precision:   .57412                .50928            .42029
-  Recall:      .45700                .19200            .27550</code></pre>
+  Accuracy:    .86431                .85487            .83008
+  Precision:   .57412                .42892            .42029
+  Recall:      .45700                .26700            .27550</code></pre>
 <p>This shows that the best scores I received were with my intuition features using the AdaBoost classifier. The accuracy is slightly higher in a couple other cases but the recall is much worse in those cases.</p>
 
 </div>
@@ -11901,10 +11901,14 @@ AdaBoost:
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Question-4---Tuning-parameters">Question 4 - Tuning parameters<a class="anchor-link" href="#Question-4---Tuning-parameters">&#182;</a></h2><p><strong>What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?</strong></p>
 <p>Each algorithm we use in machine learning takes some parameters to customize how it handles a specific dataset. Changing these parameters could drastically change how the classifier chooses to classify a specific data point.</p>
+<p>If you don't tune your parameters well, you can end up with a model that is built to only handle your specific dataset and any new data points will be innacurate for new data. Conversely, it could also be far too generic to be useful for prediction.</p>
+<p>For example, if we have a DecisionTreeClassifier we can tune the parameter of min_nodes_split. If I have a set of 100 data points, and I set min_nodes_split to 50, then the best that classifier can do is split into 2 equal groups. This likely will not give enough information to be useful. If I set min_nodes_split to 2, this might get too granular and start fitting to noise in my dataset.</p>
 <p><strong>How did you tune the parameters of your particular algorithm?</strong></p>
 <p>I ran a GridSearchCV on this classifier and passed in several value options for n_estimators and a selection of SAMME or SAMME.R for the algorithm.</p>
+<p>For n_estimators I tried 5, 10, 50, 200, 500, 1000, and 2000</p>
+<p>For algorithm I tried SAMME and SAMME.R</p>
 <p><strong>What parameters did you tune? (Some algorithms do not have parameters that you need to tune -- if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).</strong></p>
-<p>I ended up tuning n_estimators and the algorithm</p>
+<p>I ended up tuning n_estimators and the algorithm, they came out as 5 n_estimators and the SAMME algorithm.</p>
 
 </div>
 </div>
@@ -11932,7 +11936,7 @@ AdaBoost:
 <p><strong>Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance.</strong></p>
 <p>Accuracy indicates that my model predicted whether a person was a POI correctly about 86.4% of the time. There are times when accuracy is not that clear. For example, in this data we had only 12.5% of people listed as POIs. This means if my model predicted that nobody was a POI it would have been 87.5% accurate.</p>
 <p>Precision is an indicator of false positives. For example, if my model predicted that someone was a POI, they would have a 57.4% of actually being a POI.</p>
-<p>Recall is an indicaor of false negatives. For example, if my model predicts that someone is not a POI, they have an 45.7% chance of not being a POI.</p>
+<p>Recall is an indicator of how many true predictions you got relative to the total true values you should have gotten. For example, my model will correctly guess 45.7% of all of the POIs in the dataset. So my model correctly guessed that a person was a POI for 45.7% of all of the POIs in there.</p>
 
 </div>
 </div>
