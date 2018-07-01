@@ -58,9 +58,9 @@ my_dataset.pop('THE TRAVEL AGENCY IN THE PARK', 0) # Remove THE TRAVEL AGENCY IN
 
 
 #Create features
-my_dataset = create_features(my_dataset)
-features_list.append('email_ratio')
-features_list.append('stock_ratio')
+# my_dataset = create_features(my_dataset)
+# features_list.append('email_ratio')
+# features_list.append('stock_ratio')
 
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
