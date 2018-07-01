@@ -68,4 +68,19 @@ def stock_ratio(restricted, restricted_deferred, total):
 
     return 1.0 * (restricted + restricted_deferred) / total
                   
-           
+
+def create_features(data_dict):
+    for entry in data_dict:
+        poi_messages_to = data_dict[entry]['from_this_person_to_poi']  
+        poi_messages_from = data_dict[entry]['from_poi_to_this_person']  
+        poi_messages_shared = data_dict[entry]['shared_receipt_with_poi']
+        messages_from = data_dict[entry]['from_messages']
+        messages_to = data_dict[entry]['to_messages']
+        data_dict[entry]['email_ratio'] = message_ratio((poi_messages_from + poi_messages_shared + poi_messages_to), (messages_from + messages_to))
+
+        restricted = data_dict[entry]['restricted_stock']
+        restricted_deferred = data_dict[entry]['restricted_stock_deferred']
+        total_stock = data_dict[entry]['total_stock_value']
+        data_dict[entry]['stock_ratio'] =stock_ratio(restricted, restricted_deferred, total_stock)
+
+    return data_dict

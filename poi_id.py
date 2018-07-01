@@ -3,10 +3,11 @@ import sys
 sys.path.append("./tools/")
 
 import pickle
+import numpy as np
 from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
 
-from feature_selection import select_kbest, tree_selection, scale_features, message_ratio, stock_ratio
+from feature_selection import select_kbest, tree_selection, scale_features, create_features
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
@@ -38,13 +39,12 @@ kbest_feature_list = ['poi', 'salary', 'total_payments', 'bonus', 'total_stock_v
 tree_feature_list = ['poi','salary', 'total_payments', 'bonus', 'deferred_income',
                      'expenses' ]
 
-features_list = tree_feature_list
+features_list = intuition_feature_list
 
 
 ### Load the dictionary containing the dataset
 with open("final_project_dataset.pkl", "r") as data_file:
     data_dict = pickle.load(data_file)
-
 
 
 ### Task 2: Remove outliers
@@ -55,29 +55,29 @@ my_dataset.pop('TOTAL', 0) # Remove the total line generated from the spreadshee
 my_dataset.pop('LOCKHART EUGENE E', 0) # Remove LOCKHART EUGENE E for all 0s
 my_dataset.pop('THE TRAVEL AGENCY IN THE PARK', 0) # Remove THE TRAVEL AGENCY IN THE PARK for not being relavent
 
+
+
 #Create features
-# variance_threshold(my_dataset)
+my_dataset = create_features(my_dataset)
+features_list.append('email_ratio')
+features_list.append('stock_ratio')
 
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
-
+features = np.array(features)
+labels = np.array(labels)
+ 
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
 ### Note that if you want to do PCA or other multi-stage operations,
 ### you'll need to use Pipelines. For more info:
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
-# kmeans
+# kmeans preprocessing
 # data = scale_features(data)
 # labels, features = targetFeatureSplit(data)
-# clf = KMeans(n_clusters=2)
 
-# RandomForest
-clf = RandomForestClassifier(random_state=42)
-
-#AdaBoost
-# clf = AdaBoostClassifier()
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
@@ -100,6 +100,12 @@ def tune_classifier(clf, param_grid, features_train, labels_train):
     print cv_rfc.best_params_
     return cv_rfc.best_estimator_
 
+def tune_kmeans_classifier(features_train, labels_train):
+    param_grid = {
+        'n_clusters': [2, 4, 6, 8, 10],
+    }
+    return tune_classifier(KMeans(), param_grid, features_train, labels_train)
+
 def tune_ada_classifier(features_train, labels_train):
     param_grid = {
         'algorithm': ['SAMME', 'SAMME.R'],    
@@ -110,15 +116,14 @@ def tune_ada_classifier(features_train, labels_train):
 def tune_rf_classifier(features_train, labels_train):
     param_grid = {
         'n_estimators' : [ 5, 10, 50, 200, 500, 1000, 2000 ],
-        # 'max_features': [ 'auto', 'sqrt', 'log2' ],
-        # 'max_depth': [ 5, 6, 7, 8 ],
-        # 'criterion': [ 'gini', 'entropy' ],
         'min_samples_split': [ 2, 4, 5, 10 ]
     }
     return tune_classifier(RandomForestClassifier(), param_grid, features_train, labels_train)
 
+# clf = tune_kmeans_classifier(features_train, labels_train)
+
 # clf = tune_rf_classifier(features_train, labels_train)
-clf = tune_ada_classifier(features_train, labels_train)
+# clf = tune_ada_classifier(features_train, labels_train)
 
 # Optimized RF with intuition features Acc: 0.78850 Prec: 0.30758 Rec: 0.21500
 # clf = RandomForestClassifier(min_samples_split=2, n_estimators=5)
@@ -129,8 +134,8 @@ clf = tune_ada_classifier(features_train, labels_train)
 # Optimized RF with tree features Acc: 0.83585 Prec: 0.40822 Rec: 0.14900
 # clf = RandomForestClassifier(min_samples_split=10, n_estimators=10)
 
-# Optimized adaboost with intuition features Acc: 0.84617 Prec: 0.54578 Rec: 0.45900
-# clf = AdaBoostClassifier(n_estimators=5, algorithm='SAMME')
+# Optimized adaboost with intuition features Acc: 0.86431 Prec: 0.57412 Rec: 0.45700 
+clf = AdaBoostClassifier(n_estimators=5, algorithm='SAMME')
 
 # Optimized adaboost with kbest features Acc: 0.86760 Prec: 0.50928 Rec: 0.19200 
 # clf = AdaBoostClassifier(n_estimators=5, algorithm='SAMME.R')
